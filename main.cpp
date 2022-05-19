@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-#include "conio.h"
+#include <conio.h>
 using namespace std;
 
 static int p = 0;
