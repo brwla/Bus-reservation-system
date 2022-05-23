@@ -1,13 +1,13 @@
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <conio.h>
 using namespace std;
 
 static int p = 0;
 
 class a {
-    char busn[5], driver[15], arrival[5], depart[5], from[15], to[15], seat[8][4][15];
-
+    string driver, arrival, depart, from, to, seat[8][4];
+    int busn;
 public:
     void add();
     void update();
@@ -15,11 +15,9 @@ public:
     void remove();
     void empty();
     void search();
-    void avail();
     void position(int i);
-}
-
-bus[10];
+    void avail();
+} bus[10];
 
 void vline(char ch) {
     for (int i=80;i>0;i--)
@@ -27,18 +25,27 @@ void vline(char ch) {
 }
 
 void a::add() {
+    addBusAgain:
     cout<<"Enter bus no: ";
     cin>>bus[p].busn;
+    for (int x = 0; x < p; x++) {
+        if (bus[p].busn == bus[x].busn) {
+            cout<<"Bus number already exists.\nTry again.\n";
+            cin.clear();
+            goto addBusAgain;
+        }
+    }
     cout<<"\nEnter Driver's name: ";
-    cin>>bus[p].driver;
+    cin.ignore();
+    getline(cin, bus[p].driver);
     cout<<"\nArrival time: ";
-    cin>>bus[p].arrival;
+    getline(cin, bus[p].arrival);
     cout<<"\nDeparture time: ";
-    cin>>bus[p].depart;
+    getline(cin, bus[p].depart);
     cout<<"\nFrom: ";
-    cin>>bus[p].from;
+    getline(cin, bus[p].from);
     cout<<"\nTo: ";
-    cin>>bus[p].to;
+    getline(cin, bus[p].to);
     bus[p].empty();
     p++;
 }
@@ -46,86 +53,87 @@ void a::add() {
 void a::empty() {
     for(int i=0; i<8; i++) {
         for(int j=0;j<4;j++) {
-            strcpy(bus[p].seat[i][j], "Empty");
+            bus[p].seat[i][j] = "Empty";
         }
     }
 }
 
 void a::update() {
-    char number[5];
+    int bus_number;
     int k;
     cout<<"Enter bus no: ";
-    cin>>number;
+    cin>>bus_number;
     for (k=0;k<10;k++) {
-        if (strcmp(bus[k].busn, number)==0) {
+        if (bus[k].busn == bus_number) {
             cout<<"\nEnter Updated Driver's name: ";
-            cin>>bus[k].driver;
-            cout<<"\nUpdated Arrival time: ";
-            cin>>bus[k].arrival;
-            cout<<"\nUpdated Departure time: ";
-            cin>>bus[k].depart;
-            cout<<"\nUpdated From: ";
-            cin>>bus[k].from;
-            cout<<"\nUpdated To: ";
-            cin>>bus[k].to;
+            cin.ignore();
+            getline(cin, bus[k].driver);
+            cout<<"\nEnter Updated Arrival time: ";
+            getline(cin, bus[k].arrival);
+            cout<<"\nEnter Updated Departure time: ";
+            getline(cin, bus[k].depart);
+            cout<<"\nEnter Updated From: ";
+            getline(cin, bus[k].from);
+            cout<<"\nEnter Updated To: ";
+            getline(cin, bus[k].to);
             break;
         }
     }
-    if (strcmp(bus[k].busn, number)!=0){
+    if (bus[k].busn != bus_number){
         cout<<"No entry.\n";
     }
 }
 
 void a::allotment() {
-    int seat;
-    char number[5];
+    int seat, number;
     cout<<"Bus no: ";
     cin>>number;
-    int n;
-    for(n=0;n<=p;n++) {
-        if(strcmp(bus[n].busn, number)==0)
+    int d;
+    for(d=0;d<=p;d++) {
+        if(bus[d].busn == number)
         break;
     }
-    while(n<=p) {
-        cout<<"\nSeat Number: ";
+    while(d<=p) {
+        cout<<"\nSeat Number (1-32): ";
         cin>>seat;
         if(seat>32) {
             cout<<"\nThere are only 32 seats available in this bus.";
         }
         else {
-            if (strcmp(bus[n].seat[seat/4][(seat%4)-1], "Empty")==0) {
+            if (bus[d].seat[seat/4][(seat%4)-1] == "Empty") {
                 cout<<"Enter passenger's name: ";
-                cin>>bus[n].seat[seat/4][(seat%4)-1];
+                cin.ignore();
+                getline(cin, bus[d].seat[seat/4][(seat%4)-1]);
                 break;
             } else {
                 cout<<"The seat no. is already reserved.\n";
             }
         }
     }
-    if(n>p) {
+    if(d>p) {
         cout<<"No entry.\n";
     }
 }
 
 void a::remove() {
-    int seatdel;
-    char number[5];
+    int seatdel, busbusnum;
     cout<<"Bus no: ";
-    cin>>number;
-    int n;
-    for(n=0;n<=p;n++) {
-        if(strcmp(bus[n].busn, number)==0)
+    cin>>busbusnum;
+    int c;
+    for(c=0;c<=p;c++) {
+        if(bus[c].busn == busbusnum)
         break;
     }
-    while(n<=p) {
-        cout<<"\nSeat Number: ";
+    while(c<=p) {
+        cout<<"\nSeat Number (1-32): ";
         cin>>seatdel;
         if(seatdel>32) {
             cout<<"\nThere are only 32 seats available in this bus.";
         } else {
-             if(strcmp(bus[n].seat[seatdel/4][(seatdel%4)-1],"Empty")!=0) {
+             if(bus[c].seat[seatdel/4][(seatdel%4)-1] != "Empty") {
                 cout<<"Enter new passenger name or Enter 'Empty' to delete passenger: ";
-                cin>>bus[n].seat[seatdel/4][(seatdel%4)-1];
+                cin.ignore();
+                getline(cin, bus[c].seat[seatdel/4][(seatdel%4)-1]);
             } else {
                 cout<<"The seat no. is not reserved.\n";
             }
@@ -136,28 +144,26 @@ void a::remove() {
 
 
 void a::search() {
-    int n;
-    char number[5];
+    int n, srchnum;
     cout<<"Enter bus no: ";
-    cin>>number;
+    cin>>srchnum;
     for(n=0;n<=p;n++) {
-        if(strcmp(bus[n].busn, number)==0)
+        if(bus[n].busn == srchnum)
         break;
     }
     while(n<=p) {
         vline('*');
         cout<<"\nBus no: \t"<<bus[n].busn
-        <<"\nDriver: \t"<<bus[n].driver<<"\t\tArrival time: \t"
-        <<bus[n].arrival<<"\tDeparture time:"<<bus[n].depart
-        <<"\nFrom: \t\t"<<bus[n].from<<"\t\tTo: \t\t"<<
-        bus[n].to<<"\n";
+        <<"\t\tDriver: \t\t"<<bus[n].driver<<"\nArrival time: \t"
+        <<bus[n].arrival<<"\t\tDeparture time:\t\t"<<bus[n].depart
+        <<"\nFrom: \t\t"<<bus[n].from<<"\t\tTo: \t\t\t"<<bus[n].to<<"\n";
         vline('*');
         bus[0].position(n);
         int a=1;
         for (int i=0; i<8; i++) {
             for(int j=0;j<4;j++) {
                 a++;
-                if(strcmp(bus[n].seat[i][j],"Empty")!=0)
+                if(bus[n].seat[i][j] != "Empty")
                 cout<<"\nThe seat no "<<(a-1)<<" is reserved for "<<bus[n].seat[i][j]<<".";
             }
         }
@@ -174,7 +180,7 @@ void a::position(int l) {
         cout<<"\n";
         for (int j = 0;j<4; j++) {
             s++;
-            if(strcmp(bus[l].seat[i][j], "Empty")==0) {
+            if (bus[l].seat[i][j] == "Empty") {
                 cout.width(5);
                 cout.fill(' ');
                 cout<<s<<".";
@@ -196,33 +202,43 @@ void a::position(int l) {
 }
 
 void a::avail() {
-    for(int n=0;n<p;n++) {
-        if (bus[n].busn != " ") {
+    for(int f=0;f<p;f++) {
+        if (bus[f].busn != '\0') {
+            cout<<'\n';
             vline('*');
-            cout<<"\nBus no: \t"<<bus[n].busn<<"\nDriver: \t"<<bus[n].driver
-            <<"\t\tArrival time: \t"<<bus[n].arrival<<"\tDeparture Time: \t"
-            <<bus[n].depart<<"\nFrom: \t\t"<<bus[n].from<<"\t\tTo: \t\t"
-            <<bus[n].to<<"\n";
+            cout<<"\nBus no: \t"<<bus[f].busn<<"\t\tDriver: \t\t"<<bus[f].driver
+            <<"\nArrival time: \t"<<bus[f].arrival<<"\t\tDeparture Time: \t"
+            <<bus[f].depart<<"\nFrom: \t\t"<<bus[f].from<<"\t\tTo: \t\t\t"
+            <<bus[f].to<<"\n";
             vline('*');
             cout<<'\n';
             vline('_');
             cout<<'\n';
         }
     }
+    if (bus[0].busn == '\0') {
+        cout<<"\nNo bus added yet.\n";
+    }
 }
 
 int main() {
-    start:
-    int w,choice;
-    while(1) {
+    int w,choice,e;
+    while (1) {
         system("cls");
         cout<<"\n\n\n\n\n";
+        cout<<"\t\t\tBUS RESERVATION SYSTEM\n\n";
+        cout<<"\t\t\tPresented by:\n";
+        cout<<"\t\t\tGarcia, Berlie Jaye\n";
+        cout<<"\t\t\tIlao, Whayne Darlyne\n";
+        cout<<"\t\t\tManiores, Samantha Claire\n\n";
+        cout<<"\t\t\tPress enter to continue...";
+        _getch();
+        start:
+        system("cls");
         cout<<"\t\t\tBUS RESERVATION SYSTEM\n\n\t\t\t"
         <<"1.Admin.\n\t\t\t"
-        <<"2.Reservation.\n\t\t\t"
-        <<"3.Search Available Seat.\n\t\t\t"
-        <<"4.View Available Bus. \n\t\t\t"
-        <<"5.Exit.";
+        <<"2.User.\n\t\t\t"
+        <<"3.Exit.\n";
         cout<<"\n\t\t\tEnter your choice:-> ";
         cin>>w;
         switch(w) {
@@ -238,7 +254,10 @@ int main() {
                     <<"1.Add Bus.\n\t\t\t"
                     <<"2.Update Bus info.\n\t\t\t"
                     <<"3.Update/Delete passenger info.\n\t\t\t"
-                    <<"4.Back to main menu.\n\t\t\t";
+                    <<"4.Add Seat Reservation.\n\t\t\t"
+                    <<"5.Search Bus.\n\t\t\t"
+                    <<"6.List Bus.\n\t\t\t"
+                    <<"7.Back to main menu.\n\n\t\t\t";
                     cout<<"Enter your choice:-> ";
                     cin>>choice;
                     switch(choice) {
@@ -267,12 +286,34 @@ int main() {
                         }
 
                         case 4: {
-                            goto start;
+                            bus[p].allotment();
+                            cout << "\n\nPress any key to continue...";
+                            _getch();
+                            goto admin;
+                            break;
                         }
 
-                        default:{
+                        case 5:{
+                            bus[0].search();
+                            cout << "\n\nPress any key to continue...";
+                            _getch();
                             goto admin;
+                            break;
                         }
+
+                        case 6: {
+                            bus[0].avail();
+                            cout << "\n\nPress any key to continue...";
+                            _getch();
+                            goto admin;
+                            break;
+                        }
+
+                        case 7:
+                            goto start;
+
+                        default:
+                            goto admin;
                     }
                 } else {
                     goto start;
@@ -280,24 +321,50 @@ int main() {
             }  
 
             case 2:{
-                bus[p].allotment();
-                cout << "\n\nPress any key to continue...";
-                _getch();
-                break;
+                custMenu:
+                system("cls");
+                cout<<"\n\n\n\n\n";
+                cout<<"\t\t\tCUSTOMER MENU\n\n\t\t\t"
+                <<"1.Add Reservation.\n\t\t\t"
+                <<"2.Search Available Seat.\n\t\t\t"
+                <<"3.List Available Bus.\n\t\t\t"
+                <<"4.Back to main menu.\n";
+                cout<<"\n\t\t\tEnter your choice:-> ";
+                cin>>e;
+                switch(e) {
+                    case 1:{
+                        bus[p].allotment();
+                        cout << "\n\nPress any key to continue...";
+                        _getch();
+                        goto custMenu;
+                        break;
+                    }
+
+                    case 2:{
+                        bus[0].search();
+                        cout << "\n\nPress any key to continue...";
+                        _getch();
+                        goto custMenu;
+                        break;
+                    }
+
+                    case 3:{
+                        bus[0].avail();
+                        cout << "\n\nPress any key to continue...";
+                        _getch();
+                        goto custMenu;
+                        break;
+                    }
+
+                    case 4:
+                        goto start;
+
+                    default:
+                        goto custMenu;
+                }
             }
-            case 3:{
-                bus[0].search();
-                cout << "\n\nPress any key to continue...";
-                _getch();
-                break;
-            }
-            case 4:{
-                bus[0].avail();
-                cout << "\n\nPress any key to continue...";
-                _getch();
-                break;
-            }
-            case 5:
+
+            case 3:
                 exit(0);
 
             default:
