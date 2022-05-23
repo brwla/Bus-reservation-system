@@ -224,15 +224,6 @@ void a::avail() {
 int main() {
     int w,choice,e;
     while (1) {
-        system("cls");
-        cout<<"\n\n\n\n\n";
-        cout<<"\t\t\tBUS RESERVATION SYSTEM\n\n";
-        cout<<"\t\t\tPresented by:\n";
-        cout<<"\t\t\tGarcia, Berlie Jaye\n";
-        cout<<"\t\t\tIlao, Whayne Darlyne\n";
-        cout<<"\t\t\tManiores, Samantha Claire\n\n";
-        cout<<"\t\t\tPress enter to continue...";
-        _getch();
         start:
         system("cls");
         cout<<"\t\t\tBUS RESERVATION SYSTEM\n\n\t\t\t"
