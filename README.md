@@ -6,6 +6,9 @@ This uses an array as its data structure.
   - add bus info.
   - update bus info.
   - modify passenger reservation.
+  - add seat reservation
+  - search bus
+  - list bus
 - reserve bus seat.
 - search for available seat.
 - view available buses.
